@@ -1,0 +1,67 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:tns="http://api.example.com/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             name="PokemonService"
+             targetNamespace="http://api.example.com/"
+             xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+
+    <types>
+        <xsd:schema targetNamespace="http://api.example.com/">
+            <xsd:element name="getPokemonsRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="offset" type="xsd:int"/>
+                        <xsd:element name="limit" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getPokemonsResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="pokemons" type="tns:PokemonDTO" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="PokemonDTO">
+                <xsd:sequence>
+                    <xsd:element name="name" type="xsd:string"/>
+                    <xsd:element name="url" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </types>
+
+    <message name="getPokemonsRequest">
+        <part name="parameters" element="tns:getPokemonsRequest"/>
+    </message>
+    <message name="getPokemonsResponse">
+        <part name="parameters" element="tns:getPokemonsResponse"/>
+    </message>
+
+    <portType name="PokemonServicePortType">
+        <operation name="getPokemons">
+            <input message="tns:getPokemonsRequest"/>
+            <output message="tns:getPokemonsResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="PokemonServiceBinding" type="tns:PokemonServicePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="getPokemons">
+            <soap:operation soapAction="http://api.example.com/getPokemons"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="PokemonService">
+        <port name="PokemonServicePort" binding="tns:PokemonServiceBinding">
+            <soap:address location="http://localhost:8080/pokemonService"/>
+        </port>
+    </service>
+</definitions>
